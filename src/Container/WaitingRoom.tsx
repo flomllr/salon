@@ -1,8 +1,15 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
+
 import { Logo } from "src/Components/Logo";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import useSound from "use-sound";
+
 interface Props {
   participants: any[];
+}
+
+function getRndInteger(min : number, max : number) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 const messages = [
@@ -12,10 +19,25 @@ const messages = [
   "apparently likes dogs",
   "is really excited",
   "is ready",
-  "is joining the call"
+  "is joining the call",
 ];
 
 const WaitingRoom: React.FC<Props> = ({ participants }) => {
+  const [numberOfParticipants, setNumberOfParticipants] = useState(participants.length);
+  alert('yo')
+  const [playJoin1] = useSound("/sounds/join.mp3", { volume: 0.6 });
+  const [playJoin2] = useSound("/sounds/join2.mp3", { volume: 0.6 });
+  useEffect(() => {
+    if (participants.length !== numberOfParticipants) {
+      setNumberOfParticipants(participants.length);
+      const i = getRndInteger(0, 2);
+      if (i === 0) {
+        playJoin1({});
+      } else {
+        playJoin2({});
+      }
+    }
+  }, [participants, numberOfParticipants, playJoin1, playJoin2]);
   const items = participants.map((p, i) => (
     <CSSTransition key={p.name + p.profilePicture} timeout={500} classNames="item">
       <div
