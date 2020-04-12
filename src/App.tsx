@@ -71,6 +71,16 @@ class App extends React.Component<any, AppState> {
     this.setState({ participants });
   };
 
+  onNextPartOfSequence = () => {
+    const { salonId, userId } = this.state;
+    ApiService.post("rpc", {
+      salonId,
+      userId,
+      action: "NEXT_STATE",
+      payload: {},
+    });
+  };
+
   render() {
     const {
       state: salonState,
@@ -116,6 +126,7 @@ class App extends React.Component<any, AppState> {
             userId={userId}
             updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
+            onNextPartOfSequence={this.onNextPartOfSequence}
           />
         )}
         {salonState === "ONE_ON_ONE" && currentRoom && (
@@ -125,6 +136,7 @@ class App extends React.Component<any, AppState> {
             userId={userId}
             updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
+            onNextPartOfSequence={this.onNextPartOfSequence}
           />
         )}
         {!salonState && (

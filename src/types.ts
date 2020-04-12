@@ -1,12 +1,12 @@
 // I am sorry for that
-enum Gender {
+export enum Gender {
   MALE = "MALE",
   FEMALE = "FEMALE",
 }
 
 export interface Participant {
   uid: string;
-  gender: Gender;
+  gender: "MALE" | "FEMALE";
   name: string;
   twitterHandle: string;
   profilePicture: string; // URL
@@ -22,12 +22,13 @@ export interface Salon {
   rooms: Room[];
 }
 export interface Room {
-  id: string; // Same as current roomId in the Participant interface
-  action: string; // Bold text
-  instruction: string; // Normal text next to action
-  timer?: number; // Epoch of the timer. If undefined -> no timer
-  activeSpeaker?: string; // uid of the active speaker
-  nextPartOfSequenceButtonText?: string; // The label of the button. Can be "End speaker turn" or "Next question" or whatever. it goes to the next part of the game. If undefined there is no button!
+  id: string // Same as current roomId in the Participant interface
+  action: string // Bold text
+  instruction: string // Normal text next to action
+  popup?: string // If this is not undefined, a popup with the instructions of the current game will be shown on the client as well as the timer
+  timer?: number // Epoch of the timer. If undefined -> no timer
+  activeSpeaker?: string // uid of the active speaker
+  nextPartOfSequenceButtonText?: string // The label of the button. Can be "End speaker turn" or "Next question" or whatever. it goes to the next part of the game. If undefined there is no button!
 }
 enum Interrupt {
   NEXT_STATE = "NEXT_STATE",
