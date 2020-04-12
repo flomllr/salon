@@ -35,3 +35,21 @@ enum Interrupt {
 export interface Interrupts {
   [key: string]: Interrupt[]; // key is the salon id
 }
+
+export interface SignupData {
+  name?: string;
+  gender?: string;
+  twitterHandle?: string;
+  salonId?: string;
+}
+
+export interface AppState {
+  participants?: Participant[];
+  userId?: string;
+  salonId?: string | number;
+  currentRoomId?: string;
+  signupData?: SignupData;
+  callFrame?: any;
+  rooms?: Room[];
+  state?: "WAITING_ROOM" | "GROUP" | "ONE_ON_ONE" | "END";
+}

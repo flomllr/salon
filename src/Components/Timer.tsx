@@ -24,7 +24,7 @@ const Timer: React.FunctionComponent<Props> = ({ until }) => {
   }, [ogTime]);
   return (
     <div>
-      <p>{fmtMSS(Math.round(timeLeft / 1000))}</p>
+      <p>{timeLeft > 0 ? fmtMSS(Math.round(timeLeft / 1000)) : 'Waiting...'}</p>
     </div>
   );
 };

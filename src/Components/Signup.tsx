@@ -1,20 +1,14 @@
 import * as React from "react";
-
-export interface SignupData {
-  name?: string;
-  gender?: string;
-  twitterHandle?: string;
-  salonId?: string;
-}
+import { SignupData } from "../types";
 
 interface Props {
-  data: SignupData;
+  data?: SignupData;
   setData: (data: SignupData) => any;
   join: () => any;
 }
 
 const Signup: React.FC<Props> = ({ data, setData, join }) => {
-  const { name, gender, twitterHandle, salonId } = data;
+  const { name, gender, twitterHandle, salonId } = data || {};
   return (
     <div>
       <input
@@ -31,7 +25,7 @@ const Signup: React.FC<Props> = ({ data, setData, join }) => {
         value={gender}
         onChange={(e) => setData({ gender: e.target.value })}
       >
-        <option value="" disabled selected>
+        <option value="" disabled>
           Select your gender
         </option>
         <option value="MALE">Male</option>

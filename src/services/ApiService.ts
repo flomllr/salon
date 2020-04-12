@@ -17,7 +17,7 @@ const get: (
 
 const post: (
   endpoint: string,
-  body: { [key: string]: string | number }
+  body: { [key: string]: any }
 ) => Promise<{ [key: string]: string }> = async (endpoint, body) => {
   try {
     const response = await fetch(address + endpoint, {

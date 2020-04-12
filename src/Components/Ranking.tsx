@@ -1,14 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
+import { Participant } from "../types";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 interface Props {
   ranking: any[];
+  participants: Participant[];
+  updateRanking: (ranking: any[]) => any;
 }
 
-const Ranking: React.FC<Props> = ({ ranking }) => {
-  const [rankingState, setRankingState] = useState(ranking);
-
+const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
   const grid = 8;
 
   const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
@@ -37,12 +38,12 @@ const Ranking: React.FC<Props> = ({ ranking }) => {
     }
 
     const newRanking = reorder(
-      rankingState,
+      ranking,
       result.source.index,
       result.destination.index
     );
 
-    setRankingState(newRanking as string[]);
+    updateRanking(newRanking as string[]);
   };
 
   const reorder = (list: any, startIndex: number, endIndex: number) => {
@@ -61,8 +62,8 @@ const Ranking: React.FC<Props> = ({ ranking }) => {
             ref={provided.innerRef}
             style={getListStyle(snapshot.isDraggingOver)}
           >
-            {rankingState.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
+            {ranking.map((item, index) => (
+              <Draggable key={item} draggableId={item} index={index}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -73,7 +74,7 @@ const Ranking: React.FC<Props> = ({ ranking }) => {
                       provided.draggableProps.style
                     )}
                   >
-                    {item.content}
+                    {participants.find((p) => p.uid === item)?.name}
                   </div>
                 )}
               </Draggable>

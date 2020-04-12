@@ -4,22 +4,13 @@ import Daily from "./Components/Daily";
 import { observer } from "mobx-react";
 import ApiService from "./services/ApiService";
 import Pusher from "pusher-js";
-import Signup, { SignupData } from "./Components/Signup";
+import Signup from "./Components/Signup";
+import { AppState, SignupData } from "./types";
 
 import WaitingRoom from "./Container/WaitingRoom";
-import VideoRoom, { Room } from "./Container/VideoRoom";
+import VideoRoom from "./Container/VideoRoom";
 
-class App extends React.Component<any, any> {
-  state = {
-    participants: [],
-    state: undefined,
-    currentRoomId: undefined,
-    userId: undefined,
-    signupData: {},
-    callFrame: undefined,
-    rooms: [],
-  };
-
+class App extends React.Component<any, AppState> {
   pusherSubscribe = (channelId: string) => {
     const pusher = new Pusher("9e2ab3e8d8eacf86ae5b", {
       cluster: "eu",
@@ -57,21 +48,38 @@ class App extends React.Component<any, any> {
       }
     );
 
-    this.setState({ userId });
+    this.setState({ userId, salonId: channelId });
     this.pusherSubscribe(channelId);
     this.handleUpdate(currentState);
   };
 
-  updateRanking = (ranking: string[]) => {};
+  updateRanking = (newRanking: any[]) => {
+    const { salonId, userId, participants } = this.state;
+    ApiService.post("rpc", {
+      salonId,
+      userId,
+      action: "UPDATE_RANKING",
+      payload: newRanking,
+    });
+
+    // Optimistic update
+    participants?.forEach((p) => {
+      if (p.uid === userId) {
+        p.ranking = newRanking;
+      }
+    });
+    this.setState({ participants });
+  };
 
   render() {
     const {
       state: salonState,
-      participants,
+      participants = [],
       currentRoomId,
-      signupData,
+      signupData = { name: "", gender: "", salonId: "", twitterHandle: "" },
       rooms = [],
-    } = this.state;
+      userId,
+    } = this.state || {};
     console.log(salonState);
 
     const currentRoom = rooms.find((r) => (r as any).id === currentRoomId);
@@ -104,12 +112,18 @@ class App extends React.Component<any, any> {
         {salonState === "GROUP" && currentRoom && (
           <VideoRoom
             room={currentRoom}
+            participants={participants}
+            userId={userId}
+            updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
           />
         )}
         {salonState === "ONE_ON_ONE" && currentRoom && (
           <VideoRoom
             room={currentRoom}
+            participants={participants}
+            userId={userId}
+            updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
           />
         )}

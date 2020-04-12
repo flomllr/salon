@@ -1,22 +1,26 @@
 import * as React from "react";
 import Daily from "src/Components/Daily";
 import styled from "styled-components";
-
-export interface Room {
-  id: string; // Same as current roomId in the Participant interface
-  action: string; // Bold text
-  instruction: string; // Normal text next to action
-  timer?: number; // Epoch of the timer. If undefined -> no timer
-  activeSpeaker?: string; // uid of the active speaker
-}
+import { Room, Participant } from "../types";
+import Ranking from "../Components/Ranking";
 
 interface Props {
   registerCallFrame: (frame: any) => any;
   room: Room;
+  participants: Participant[];
+  userId?: string;
+  updateRanking: (ranking: any[]) => any;
 }
 
-const VideoRoom: React.FC<Props> = ({ room, registerCallFrame }) => {
+const VideoRoom: React.FC<Props> = ({
+  room,
+  registerCallFrame,
+  participants,
+  userId,
+  updateRanking,
+}) => {
   const { id: roomId, action, instruction, timer, activeSpeaker } = room;
+  const { ranking } = participants.find((p) => p.uid === userId) || {};
 
   return (
     <Wrapper>
@@ -27,6 +31,11 @@ const VideoRoom: React.FC<Props> = ({ room, registerCallFrame }) => {
         {activeSpeaker}
       </Bar>
       <Daily roomId={roomId} registerCallFrame={registerCallFrame} />
+      <Ranking
+        updateRanking={updateRanking}
+        ranking={ranking || []}
+        participants={participants}
+      />
     </Wrapper>
   );
 };
