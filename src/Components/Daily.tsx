@@ -26,8 +26,8 @@ const Daily: React.FunctionComponent<Props> = ({
 
 const DailyFrame = styled.iframe`
   border: none;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 `;
 
 export default Daily;

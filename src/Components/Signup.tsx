@@ -24,23 +24,40 @@ const Signup: React.FC<Props> = ({ data, setData, join }) => {
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Logo>Salon</Logo>
         </div>
-        <Input value={name} onChange={(e) => setData({ name: e.target.value })} placeholder="Name" />
+        <Input
+          value={name}
+          onChange={(e) => setData({ name: e.target.value })}
+          placeholder="Name"
+        />
         <Input
           value={twitterHandle}
           onChange={(e) => setData({ twitterHandle: e.target.value })}
           placeholder="Twitter handle"
         />
-        <select value={gender} onChange={(e) => setData({ gender: e.target.value })}>
+        <select
+          value={gender}
+          onChange={(e) => setData({ gender: e.target.value })}
+        >
           <option value="" disabled>
             Please choose one of those options
           </option>
           <option value="MALE">I am a Man and I want to meet Women</option>
           <option value="FEMALE">I am a Woman and I want to meet Men</option>
         </select>
-        <Input value={salonId} onChange={(e) => setData({ salonId: e.target.value })} placeholder="Salon ID" />
+        <Input
+          value={salonId}
+          onChange={(e) => setData({ salonId: e.target.value })}
+          placeholder="Salon ID"
+        />
         <Button onClick={join}>join</Button>
       </div>
     </div>

@@ -1,7 +1,9 @@
 import * as React from "react";
-import { useState } from "react";
 import { Participant } from "../types";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { shadow } from "../theme";
+import Person from "./Person";
+import styled from "styled-components";
 
 interface Props {
   ranking: any[];
@@ -19,16 +21,15 @@ const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
     margin: `0 0 ${grid}px 0`,
 
     // change background colour if dragging
-    background: isDragging ? "lightgreen" : "grey",
+
+    boxShadow: isDragging ? shadow : undefined,
 
     // styles we need to apply on draggables
     ...draggableStyle,
   });
 
   const getListStyle = (isDraggingOver: boolean) => ({
-    background: isDraggingOver ? "lightblue" : "lightgrey",
     padding: grid,
-    width: 250,
   });
 
   const onDragEnd = (result: any) => {
@@ -54,37 +55,53 @@ const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="droppable">
-        {(provided, snapshot) => (
-          <div
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            style={getListStyle(snapshot.isDraggingOver)}
-          >
-            {ranking.map((item, index) => (
-              <Draggable key={item} draggableId={item} index={index}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={getItemStyle(
-                      snapshot.isDragging,
-                      provided.draggableProps.style
-                    )}
-                  >
-                    {participants.find((p) => p.uid === item)?.name}
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <Wrapper>
+      <Infobox>
+        <h2>Private</h2>
+        <h3>Your Ranking</h3>
+        <p>
+          Those are the people you want to speak to the most. We’ll do our best
+          to match you with them in case of mutual interest
+        </p>
+      </Infobox>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={getListStyle(snapshot.isDraggingOver)}
+            >
+              {ranking.map((item, index) => (
+                <Draggable key={item} draggableId={item} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      style={getItemStyle(
+                        snapshot.isDragging,
+                        provided.draggableProps.style
+                      )}
+                    >
+                      <Person
+                        person={participants.find((p) => p.uid === item)}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    </Wrapper>
   );
 };
 
+const Wrapper = styled.div``;
+const Infobox = styled.div`
+  padding: 20px;
+`;
 export default Ranking;
