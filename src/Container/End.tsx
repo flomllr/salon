@@ -65,7 +65,7 @@ export const End: React.FC<Props> = ({ mutualMatches }) => {
           >
             <img style={{ borderRadius: "50%" }} src={m.profilePicture} width={50} />
             <label style={{ marginLeft: 10, fontSize: "1.1em" }}>
-        You and {m.name} liked each others! Contact {m.gender === "MALE" ? 'him' : 'her'} on Twitter <strong>{m.twitterHandle}</strong>
+        You and {m.name} liked each other! Contact {m.gender === "MALE" ? 'him' : 'her'} on Twitter <strong>{m.twitterHandle}</strong>
             </label>
           </div>
         ))}
