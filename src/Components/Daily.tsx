@@ -18,6 +18,11 @@ const Daily: React.FunctionComponent<Props> = ({
     const frame = document.getElementById("frame");
     const callFrame = DailyIframe.wrap(frame);
     callFrame.join({ url: dailyUrl + roomId });
+    console.log("callFrame old url", callFrame._iframe.src);
+    const buggyUrl = callFrame._iframe.src;
+    const cleanUrl = buggyUrl.split("?")[0];
+    callFrame._iframe.src = cleanUrl;
+    console.log("callFrame new url", callFrame._iframe.src);
     registerCallFrame(callFrame);
   }, [roomId]);
 

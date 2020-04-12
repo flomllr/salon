@@ -6,6 +6,10 @@ import Ranking from "../Components/Ranking";
 import Timer from "../Components/Timer";
 import { SmallLogo } from "src/Components/Logo";
 import { Button } from "src/Components/Button";
+import { shadow } from "../theme";
+import Person from "../Components/Person";
+import { colors } from "../theme";
+import Space from "src/Components/Space";
 
 interface Props {
   registerCallFrame: (frame: any) => any;
@@ -14,6 +18,7 @@ interface Props {
   userId?: string;
   updateRanking: (ranking: any[]) => any;
   onNextPartOfSequence: () => any;
+  mode?: string;
 }
 
 const VideoRoom: React.FC<Props> = ({
@@ -23,6 +28,7 @@ const VideoRoom: React.FC<Props> = ({
   userId,
   updateRanking,
   onNextPartOfSequence,
+  mode,
 }) => {
   const {
     id: roomId,
@@ -34,6 +40,7 @@ const VideoRoom: React.FC<Props> = ({
     popup,
   } = room;
   const { ranking } = participants.find((p) => p.uid === userId) || {};
+  console.log(mode);
 
   return (
     <>
@@ -54,6 +61,19 @@ const VideoRoom: React.FC<Props> = ({
         </Bar>
         <Video roomId={roomId} registerCallFrame={registerCallFrame} />
         <Sidebar>
+          {activeSpeaker && (
+            <SpeakerBox important={activeSpeaker === userId}>
+              {activeSpeaker === userId && <p>Your turn!</p>}
+              {activeSpeaker !== userId && (
+                <>
+                  <Person
+                    person={participants.find((p) => p.uid === activeSpeaker)}
+                  />
+                  <p>'s turn</p>
+                </>
+              )}
+            </SpeakerBox>
+          )}
           <Ranking
             updateRanking={updateRanking}
             ranking={ranking || []}
@@ -61,7 +81,17 @@ const VideoRoom: React.FC<Props> = ({
           />
         </Sidebar>
       </Wrapper>
-      {popup && <Popup>{popup}</Popup>}
+      {popup && (
+        <Popup>
+          {popup}
+          {timer && (
+            <TimerBox>
+              <p>Starting in </p>
+              <Timer until={timer} />
+            </TimerBox>
+          )}
+        </Popup>
+      )}
     </>
   );
 };
@@ -81,6 +111,10 @@ const Bar = styled.div`
   grid-gap: 10px;
   background-color: #fff;
   padding: 20px 30px;
+
+  p {
+    margin: 0;
+  }
 `;
 
 const Video = styled(Daily)`
@@ -119,6 +153,32 @@ const Popup = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  box-shadow: ${shadow};
+  border-radius: 4px;
+  padding: 50px;
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+`;
+
+const TimerBox = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+`;
+
+const SpeakerBox = styled.div<{ important?: boolean }>`
+  padding: 20px;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  p {
+    font-size: 20px;
+    ${(p) => p.important && "font-weight: 700;"}
+  }
+  border: 5px solid ${(p) => (p.important ? colors.warning : colors.white)};
 `;
 
 export default VideoRoom;

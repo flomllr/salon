@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Participant } from "../types";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { shadow } from "../theme";
+import { shadow, colors } from "../theme";
 import Person from "./Person";
 import styled from "styled-components";
 
@@ -57,12 +57,13 @@ const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
   return (
     <Wrapper>
       <Infobox>
-        <h2>Private</h2>
+        <Private>🔒 Private</Private>
         <h3>Your Ranking</h3>
         <p>
           Those are the people you want to speak to the most. We’ll do our best
-          to match you with them in case of mutual interest
+          to match you with them in case of mutual interest.
         </p>
+        <p>Reorder by drag and drop.</p>
       </Infobox>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
@@ -86,6 +87,7 @@ const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
                     >
                       <Person
                         person={participants.find((p) => p.uid === item)}
+                        index={index}
                       />
                     </div>
                   )}
@@ -100,8 +102,14 @@ const Ranking: React.FC<Props> = ({ ranking, updateRanking, participants }) => {
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  border: 5px solid ${colors.lightgray};
+`;
 const Infobox = styled.div`
   padding: 20px;
+`;
+
+const Private = styled.h3`
+  color: ${colors.gray};
 `;
 export default Ranking;

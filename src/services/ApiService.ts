@@ -10,7 +10,7 @@ const get: (
     const responseJson = await response.json();
     return await responseJson;
   } catch (e) {
-    console.error(e);
+    console.log(e);
     return { error: e };
   }
 };
@@ -29,14 +29,14 @@ const post: (
       body: JSON.stringify(body),
     });
     if (response.status >= 300) {
-      console.error("Post response status", response.status);
+      console.log("Post response status", response.status);
       return { error: "Error " + response.status };
     } else {
       const responseJson = await response.json();
       return await responseJson;
     }
   } catch (e) {
-    console.error(e);
+    console.log(e);
     return { error: e, location: "ApiService.post exception" };
   }
 };

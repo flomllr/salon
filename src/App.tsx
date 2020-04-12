@@ -6,9 +6,11 @@ import ApiService from "./services/ApiService";
 import Pusher from "pusher-js";
 import Signup from "./Components/Signup";
 import { AppState, SignupData } from "./types";
+import styled from "styled-components";
 
 import WaitingRoom from "./Container/WaitingRoom";
 import VideoRoom from "./Container/VideoRoom";
+import { colors } from "./theme";
 
 class App extends React.Component<any, AppState> {
   pusherSubscribe = (channelId: string) => {
@@ -34,34 +36,47 @@ class App extends React.Component<any, AppState> {
   };
 
   join = async () => {
-    const { name, gender, twitterHandle, salonId } = this.state
-      .signupData as any;
+    const { signupData } = this.state || {};
+    const { name, gender, twitterHandle, salonId } = signupData || {};
     console.log("Joining", name, gender, twitterHandle, salonId);
 
-    const { channelId, yourId: userId, currentState } = await ApiService.post(
-      "join",
-      {
-        salonId,
-        name,
-        gender,
-        twitterHandle,
-      }
-    );
+    if (!gender) {
+      this.showError("Please select a gender.");
+      return;
+    }
+    if (!name) {
+      this.showError("Please provide a name.");
+      return;
+    }
+    if (!salonId) {
+      this.showError("Please provide a salon ID.");
+      return;
+    }
 
-    this.setState({ userId, salonId: channelId });
-    this.pusherSubscribe(channelId);
-    this.handleUpdate(currentState);
-  };
-
-  updateRanking = (newRanking: any[]) => {
-    const { salonId, userId, participants } = this.state;
-    ApiService.post("rpc", {
+    const {
+      channelId,
+      yourId: userId,
+      currentState,
+      error,
+    } = await ApiService.post("join", {
       salonId,
-      userId,
-      action: "UPDATE_RANKING",
-      payload: newRanking,
+      name,
+      gender,
+      twitterHandle,
     });
 
+    if (error) {
+      console.error("Error:", error);
+      this.showError(error);
+    } else {
+      this.setState({ userId, salonId: channelId });
+      this.pusherSubscribe(channelId);
+      this.handleUpdate(currentState);
+    }
+  };
+
+  updateRanking = async (newRanking: any[]) => {
+    const { salonId, userId, participants } = this.state;
     // Optimistic update
     participants?.forEach((p) => {
       if (p.uid === userId) {
@@ -69,16 +84,37 @@ class App extends React.Component<any, AppState> {
       }
     });
     this.setState({ participants });
+    const { error } = await ApiService.post("rpc", {
+      salonId,
+      userId,
+      action: "UPDATE_RANKING",
+      payload: newRanking,
+    });
+    if (error) {
+      console.error("Error:", error);
+      this.showError(error);
+    }
   };
 
-  onNextPartOfSequence = () => {
-    const { salonId, userId } = this.state;
-    ApiService.post("rpc", {
+  onNextPartOfSequence = async () => {
+    const { salonId, userId, currentRoomId } = this.state;
+    const { error } = await ApiService.post("rpc", {
       salonId,
       userId,
       action: "NEXT_STATE",
-      payload: {},
+      payload: currentRoomId,
     });
+    if (error) {
+      console.error("Error:", error);
+      this.showError(error);
+    }
+  };
+
+  showError = (error: string) => {
+    this.setState({ error });
+    setTimeout(() => {
+      this.setState({ error: undefined });
+    }, 3000);
   };
 
   render() {
@@ -89,35 +125,17 @@ class App extends React.Component<any, AppState> {
       signupData = { name: "", gender: "", salonId: "", twitterHandle: "" },
       rooms = [],
       userId,
+      error,
     } = this.state || {};
     console.log(salonState);
 
     const currentRoom = rooms.find((r) => (r as any).id === currentRoomId);
     return (
       <div className="App">
-        <button
-          onClick={() =>
-            this.setState({ state: "GROUP", currentRoomId: "hello" })
-          }
-        >
-          Join Hello
-        </button>
-        <button
-          onClick={() =>
-            this.setState({ state: "GROUP", currentRoomId: "world" })
-          }
-        >
-          Join Hello
-        </button>
-        <button
-          onClick={() =>
-            this.setState({ state: undefined, currentRoomId: undefined })
-          }
-        >
-          Leave
-        </button>
         {salonState === "WAITING_ROOM" && (
-          <WaitingRoom participants={participants} />
+          <WaitingRoom
+            participants={participants.filter((p) => p.uid !== userId)}
+          />
         )}
         {salonState === "GROUP" && currentRoom && (
           <VideoRoom
@@ -127,6 +145,7 @@ class App extends React.Component<any, AppState> {
             updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
             onNextPartOfSequence={this.onNextPartOfSequence}
+            mode={salonState}
           />
         )}
         {salonState === "ONE_ON_ONE" && currentRoom && (
@@ -137,6 +156,7 @@ class App extends React.Component<any, AppState> {
             updateRanking={this.updateRanking}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
             onNextPartOfSequence={this.onNextPartOfSequence}
+            mode={salonState}
           />
         )}
         {!salonState && (
@@ -148,9 +168,22 @@ class App extends React.Component<any, AppState> {
             join={this.join}
           />
         )}
+        {error && <Error id="errorBox">{error}</Error>}
       </div>
     );
   }
 }
+
+const Error = styled.div`
+  position: fixed;
+  background-color: ${colors.warning};
+  padding: 10px;
+  color: #fff;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 300ms ease;
+  border-radius: 3px;
+`;
 
 export default observer(App);

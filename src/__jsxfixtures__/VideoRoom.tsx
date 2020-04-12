@@ -11,7 +11,8 @@ const participants: Participant[] = [
     gender: "MALE",
     name: "Florian",
     twitterHandle: "florianmllr",
-    profilePicture: "",
+    profilePicture:
+      "https://pbs.twimg.com/profile_images/1156174459482574848/p9__rbpC_400x400.jpg",
     ranking,
     likes,
     currentRoomId: "hello",
@@ -21,7 +22,8 @@ const participants: Participant[] = [
     gender: "FEMALE",
     name: "Vivian",
     twitterHandle: "vivian",
-    profilePicture: "",
+    profilePicture:
+      "https://pbs.twimg.com/profile_images/1156174459482574848/p9__rbpC_400x400.jpg",
     ranking,
     likes,
     currentRoomId: "hello",
@@ -33,9 +35,8 @@ const room: Room = {
   action: "Action",
   instruction: "Instruction",
   timer: new Date().getTime() + 30 * 1000,
-  activeSpeaker: undefined,
+  activeSpeaker: "",
   nextPartOfSequenceButtonText: "Next",
-  popup: undefined,
 };
 
 const updateRanking = (ranking: any) => {
@@ -54,5 +55,6 @@ export default (
     userId={"asdf"}
     updateRanking={updateRanking}
     onNextPartOfSequence={nextPartOfSequence}
+    mode="ONE_ON_ONE"
   />
 );

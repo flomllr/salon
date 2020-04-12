@@ -53,4 +53,5 @@ export interface AppState {
   callFrame?: any;
   rooms?: Room[];
   state?: "WAITING_ROOM" | "GROUP" | "ONE_ON_ONE" | "END";
+  error?: string;
 }

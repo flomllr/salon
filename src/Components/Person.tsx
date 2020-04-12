@@ -4,18 +4,37 @@ import styled from "styled-components";
 
 interface Props {
   person?: Participant;
+  index?: number;
 }
 
-const Person: React.FC<Props> = ({ person }) => {
+const Person: React.FC<Props> = ({ person, index }) => {
   const { name, profilePicture } = person || {};
   return (
     <Wrapper>
-      {profilePicture && <img src={profilePicture} />}
-      {name}
+      {index !== undefined && <Name>{index + 1}) </Name>}
+      {profilePicture && <Image src={profilePicture} />}
+      <Name>{name}</Name>
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+  justify-content: start;
+  grid-gap: 20px;
+`;
+
+const Image = styled.img`
+  width: 50px;
+  height: auto;
+  border-radius: 100px;
+`;
+
+const Name = styled.p`
+  font-size: 20px;
+  font-weight: 700;
+`;
 
 export default Person;
