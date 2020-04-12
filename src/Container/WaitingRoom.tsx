@@ -12,7 +12,7 @@ const messages = [
   "apparently likes dogs",
   "is really excited",
   "is ready",
-  "is join the call"
+  "is joining the call"
 ];
 
 const WaitingRoom: React.FC<Props> = ({ participants }) => {
