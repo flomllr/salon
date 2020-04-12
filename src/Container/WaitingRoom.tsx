@@ -24,7 +24,6 @@ const messages = [
 
 const WaitingRoom: React.FC<Props> = ({ participants }) => {
   const [numberOfParticipants, setNumberOfParticipants] = useState(participants.length);
-  alert('yo')
   const [playJoin1] = useSound("/sounds/join.mp3", { volume: 0.6 });
   const [playJoin2] = useSound("/sounds/join2.mp3", { volume: 0.6 });
   useEffect(() => {
@@ -37,7 +36,7 @@ const WaitingRoom: React.FC<Props> = ({ participants }) => {
         playJoin2({});
       }
     }
-  }, [participants, numberOfParticipants, playJoin1, playJoin2]);
+  }, []);
   const items = participants.map((p, i) => (
     <CSSTransition key={p.name + p.profilePicture} timeout={500} classNames="item">
       <div
