@@ -6,4 +6,4 @@ const ranking = [
   { id: "2", content: "Tyron" },
 ];
 
-export default <Ranking ranking={ranking} />;
+// export default <Ranking ranking={ranking} />;
