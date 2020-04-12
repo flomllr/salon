@@ -111,6 +111,9 @@ class App extends React.Component<any, AppState> {
   };
 
   showError = (error: string) => {
+    if (typeof error !== "string") {
+      error = JSON.stringify(error);
+    }
     this.setState({ error });
     setTimeout(() => {
       this.setState({ error: undefined });
