@@ -8,6 +8,7 @@ import { SmallLogo } from "src/Components/Logo";
 import { Button } from "src/Components/Button";
 import { shadow } from "../theme";
 import Person from "../Components/Person";
+import Like from "../Components/Like";
 import { colors } from "../theme";
 import Space from "src/Components/Space";
 
@@ -16,9 +17,10 @@ interface Props {
   room: Room;
   participants: Participant[];
   userId?: string;
-  updateRanking: (ranking: any[]) => any;
+  updateRanking?: (ranking: any[]) => any;
   onNextPartOfSequence: () => any;
   mode?: string;
+  like?: (uid: string) => any;
 }
 
 const VideoRoom: React.FC<Props> = ({
@@ -29,6 +31,7 @@ const VideoRoom: React.FC<Props> = ({
   updateRanking,
   onNextPartOfSequence,
   mode,
+  like,
 }) => {
   const {
     id: roomId,
@@ -74,11 +77,25 @@ const VideoRoom: React.FC<Props> = ({
               )}
             </SpeakerBox>
           )}
-          <Ranking
-            updateRanking={updateRanking}
-            ranking={ranking || []}
-            participants={participants}
-          />
+          {mode == "GROUP" && updateRanking && (
+            <Ranking
+              updateRanking={updateRanking}
+              ranking={ranking || []}
+              participants={participants}
+            />
+          )}
+          {console.log("The mode is", mode, mode === "ONE_ON_ONE")}
+          {mode === "ONE_ON_ONE" && like && (
+            <Like
+              like={like as any}
+              partner={
+                participants.find(
+                  (p) => p.currentRoomId === room.id && p.uid !== userId
+                ) as Participant
+              }
+              likes={participants.find((p) => p.uid === userId)?.likes}
+            />
+          )}
         </Sidebar>
       </Wrapper>
       {popup && (
@@ -155,17 +172,23 @@ const Popup = styled.div`
   transform: translate(-50%, -50%);
   box-shadow: ${shadow};
   border-radius: 4px;
-  padding: 50px;
+  padding: 100px;
   display: grid;
   justify-content: center;
   justify-items: center;
   align-items: center;
   align-content: center;
+  font-size: 16px;
 `;
 
 const TimerBox = styled.div`
   display: grid;
   grid-auto-flow: column;
+  grid-gap: 10px;
+  margin-top: 20px;
+  p {
+    font-size: 20px;
+  }
 `;
 
 const SpeakerBox = styled.div<{ important?: boolean }>`

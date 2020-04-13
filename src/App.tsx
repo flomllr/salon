@@ -11,6 +11,7 @@ import styled from "styled-components";
 import WaitingRoom from "./Container/WaitingRoom";
 import VideoRoom from "./Container/VideoRoom";
 import { colors } from "./theme";
+import { End } from "./Container/End";
 
 class App extends React.Component<any, AppState> {
   pusherSubscribe = (channelId: string) => {
@@ -37,7 +38,8 @@ class App extends React.Component<any, AppState> {
 
   join = async () => {
     const { signupData } = this.state || {};
-    const { name, gender, twitterHandle, salonId } = signupData || {};
+    let { name, gender, twitterHandle, salonId } = signupData || {};
+    salonId = "1111";
     console.log("Joining", name, gender, twitterHandle, salonId);
 
     if (!gender) {
@@ -89,6 +91,29 @@ class App extends React.Component<any, AppState> {
       userId,
       action: "UPDATE_RANKING",
       payload: newRanking,
+    });
+    if (error) {
+      console.error("Error:", error);
+      this.showError(error);
+    }
+  };
+
+  like = async (uid: string) => {
+    const { salonId, userId, participants } = this.state;
+    // Optimistic update
+    participants?.forEach((p) => {
+      if (p.uid === userId) {
+        p.likes.push(uid);
+      }
+    });
+
+    this.setState({ participants });
+
+    const { error } = await ApiService.post("rpc", {
+      salonId,
+      userId,
+      action: "LIKE",
+      payload: uid,
     });
     if (error) {
       console.error("Error:", error);
@@ -156,10 +181,17 @@ class App extends React.Component<any, AppState> {
             room={currentRoom}
             participants={participants}
             userId={userId}
-            updateRanking={this.updateRanking}
+            like={this.like}
             registerCallFrame={(callFrame: any) => this.setState({ callFrame })}
             onNextPartOfSequence={this.onNextPartOfSequence}
             mode={salonState}
+          />
+        )}
+        {salonState === "END" && (
+          <End
+            mutualMatches={
+              participants.find((p) => p.uid === userId)?.mutualMatches
+            }
           />
         )}
         {!salonState && (

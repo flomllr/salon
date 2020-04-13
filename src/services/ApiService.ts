@@ -28,7 +28,7 @@ const post: (
       },
       body: JSON.stringify(body),
     });
-    if (response.status >= 300) {
+    if (response.status >= 300 && response.status !== 400) {
       console.log("Post response status", response.status);
       return { error: "Error " + response.status };
     } else {

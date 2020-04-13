@@ -3,7 +3,7 @@ import VideoRoom from "../Container/VideoRoom";
 import { Participant, Room } from "../types";
 
 const ranking: string[] = ["asdf", "defg"];
-const likes: string[] = ["asdf"];
+const likes: string[] = ["asdf", "defg"];
 
 const participants: Participant[] = [
   {
@@ -16,6 +16,7 @@ const participants: Participant[] = [
     ranking,
     likes,
     currentRoomId: "hello",
+    mutualMatches: [],
   },
   {
     uid: "defg",
@@ -27,6 +28,7 @@ const participants: Participant[] = [
     ranking,
     likes,
     currentRoomId: "hello",
+    mutualMatches: [],
   },
 ];
 
@@ -55,6 +57,7 @@ export default (
     userId={"asdf"}
     updateRanking={updateRanking}
     onNextPartOfSequence={nextPartOfSequence}
-    mode="ONE_ON_ONE"
+    mode="GROUP"
+    like={updateRanking}
   />
 );

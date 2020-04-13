@@ -24,6 +24,7 @@ const Wrapper = styled.div`
   grid-auto-flow: column;
   justify-content: start;
   grid-gap: 20px;
+  align-content: center;
 `;
 
 const Image = styled.img`
@@ -35,6 +36,7 @@ const Image = styled.img`
 const Name = styled.p`
   font-size: 20px;
   font-weight: 700;
+  margin: 0;
 `;
 
 export default Person;

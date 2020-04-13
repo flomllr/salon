@@ -53,11 +53,11 @@ const Signup: React.FC<Props> = ({ data, setData, join }) => {
           <option value="MALE">I am a Man and I want to meet Women</option>
           <option value="FEMALE">I am a Woman and I want to meet Men</option>
         </select>
-        <Input
+        {/* <Input
           value={salonId}
           onChange={(e) => setData({ salonId: e.target.value })}
           placeholder="Salon ID"
-        />
+        /> */}
         <Button onClick={join}>join</Button>
       </div>
     </div>

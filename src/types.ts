@@ -12,6 +12,7 @@ export interface Participant {
   profilePicture: string; // URL
   ranking: string[]; // List of ids. Index 0 is the most preferrable
   likes: string[]; // Id of People they liked during one on ones
+  mutualMatches: Participant[];
   currentRoomId?: string; // If this is not undefined, user is in that daily.co room. Otherwise not in a room
 }
 export interface Salon {

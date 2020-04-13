@@ -19,7 +19,13 @@ export const End: React.FC<Props> = ({ mutualMatches }) => {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Logo>Salon</Logo>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
@@ -44,15 +50,22 @@ export const End: React.FC<Props> = ({ mutualMatches }) => {
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Logo>Salon</Logo>
         </div>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <h3>
-            You have {mutualMatches.length} {mutualMatches.length > 1 ? "matches" : "match"}
+            You have {mutualMatches.length}{" "}
+            {mutualMatches.length > 1 ? "matches" : "match"}
           </h3>
         </div>
-        {mutualMatches.map((m) => (
+        {mutualMatches.map((m: any) => (
           <div
             key={m.name}
             style={{
@@ -63,9 +76,15 @@ export const End: React.FC<Props> = ({ mutualMatches }) => {
               alignItems: "center",
             }}
           >
-            <img style={{ borderRadius: "50%" }} src={m.profilePicture} width={50} />
+            <img
+              style={{ borderRadius: "50%" }}
+              src={m.profilePicture}
+              width={50}
+            />
             <label style={{ marginLeft: 10, fontSize: "1.1em" }}>
-        You and {m.name} liked each other! Contact {m.gender === "MALE" ? 'him' : 'her'} on Twitter <strong>{m.twitterHandle}</strong>
+              You and {m.name} liked each other! Contact{" "}
+              {m.gender === "MALE" ? "him" : "her"} on Twitter{" "}
+              <strong>@{m.twitterHandle}</strong>
             </label>
           </div>
         ))}

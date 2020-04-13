@@ -6,16 +6,24 @@ import styled from "styled-components";
 import { Button } from "./Button";
 
 interface Props {
-  like: () => any;
+  like: (uid: string) => any;
+  partner: Participant;
+  likes?: string[];
 }
 
-const Like: React.FC<Props> = ({ like }) => {
+const Like: React.FC<Props> = ({ like, partner, likes }) => {
   return (
     <Wrapper>
       <Infobox>
         <Private>🔒 Private</Private>
-        <h3>Like the talk?</h3>
-        <Button onClick={like}>Yes</Button>
+        {likes && likes.includes(partner.uid) ? (
+          <h3>Awesome!</h3>
+        ) : (
+          <>
+            <h3>Like {partner.gender === "FEMALE" ? "her" : "him"}?</h3>
+            <Button onClick={() => like(partner.uid)}>I do!</Button>
+          </>
+        )}
       </Infobox>
     </Wrapper>
   );
@@ -25,6 +33,7 @@ const Wrapper = styled.div`
   border: 5px solid ${colors.lightgray};
 `;
 const Infobox = styled.div`
+  text-align: center;
   padding: 20px;
 `;
 
